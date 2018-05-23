@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/ok/CLionProjects/phz/hulib.c
+string.h
+-
+
+/Users/ok/CLionProjects/phz/hulib.h
+
+/Users/ok/CLionProjects/phz/main.c
+stdio.h
+/Users/ok/CLionProjects/phz/stdio.h
+hulib.h
+/Users/ok/CLionProjects/phz/hulib.h
+
