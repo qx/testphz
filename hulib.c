@@ -1,6 +1,5 @@
 #include <string.h>
-
-int get_kan_huxi(char *cards);
+#include "stdio.h"
 
 int get_shun_huxi_xiao(char *cards);
 
@@ -9,7 +8,6 @@ int get_shun_huxi_da(char *cards);
 int get_shun_huxi_da_without_2_7_10(char *cards, int num);
 
 int get_huxi(char *cards) {
-    int huxi = get_kan_huxi(cards);
 
     int sum = 0;
     for (int i = 0; i < 20; i++) {
@@ -23,7 +21,7 @@ int get_huxi(char *cards) {
         if (other_huxi < 0) {
             return -1;
         }
-        return huxi + other_huxi;
+        return  other_huxi;
     }
 
     // 带将
@@ -38,25 +36,9 @@ int get_huxi(char *cards) {
     }
 
     if (max_huxi < 0) return -1;
+    printf("max_huxi! %d\n",max_huxi);
 
-    return max_huxi + huxi;
-}
-
-// 获取坎牌的胡息，大坎6，小坎3
-int get_kan_huxi(char *cards) {
-    int huxi = 0;
-    for (int i = 0; i < 10; ++i) {
-        if (cards[i] != 3) continue;
-        cards[i] = 0;
-        huxi += 6;
-    }
-
-    for (int i = 10; i < 20; ++i) {
-        if (cards[i] != 3) continue;
-        cards[i] = 0;
-        huxi += 9;
-    }
-    return huxi;
+    return max_huxi;
 }
 
 struct Item {
@@ -67,7 +49,7 @@ struct Item {
 };
 
 int get_shun_huxi_xiao(char *cards) {
-    struct Item items[7];
+    struct Item items[8];
     memset(items, 0, sizeof(items));
 
     int cur_card = 0;
@@ -166,10 +148,30 @@ int get_shun_huxi_xiao(char *cards) {
             }
         }
 
+
+        if (items[cur_item].i == 4) {
+            items[cur_item].i = 5;
+            if (cards[cur_card] == 3) {
+                items[cur_item].j = 5;
+                printf("cur_item! %d\n",cur_item);
+                if (9 > cur_item) {
+                    items[cur_item].huxi = 6;
+                }
+                if ((9 < cur_item) && (20 > cur_item)) {
+                    items[cur_item].huxi = 9;
+                }
+                // items[cur_item].huxi = 3;
+
+                find = 1;
+                cards[cur_card] -= 3;
+                continue;
+            }
+        }
+
         huisu:    // 回溯
         if (cur_item < 0) goto finish;
 
-        if (items[cur_item].i == 0 || (items[cur_item].i == 4 && items[cur_item].j != 4)) {
+        if (items[cur_item].i == 0 || (items[cur_item].i == 5 && items[cur_item].j != 5)) {
             memset(&items[cur_item], 0, sizeof(struct Item));
             if (cur_item == 0) goto finish;
             --cur_item;
@@ -193,6 +195,10 @@ int get_shun_huxi_xiao(char *cards) {
                 ++cards[1];
                 ++cards[6];
                 ++cards[9];
+
+            } else if (items[cur_item].j == 5) {
+                cards[cur_card] += 3;
+
                 memset(&items[cur_item], 0, sizeof(struct Item));
                 if (cur_item == 0) goto finish;
                 --cur_item;
