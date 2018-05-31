@@ -21,7 +21,7 @@ int get_huxi(char *cards) {
         if (other_huxi < 0) {
             return -1;
         }
-        return  other_huxi;
+        return other_huxi;
     }
 
     // 带将
@@ -36,7 +36,7 @@ int get_huxi(char *cards) {
     }
 
     if (max_huxi < 0) return -1;
-    printf("max_huxi! %d\n",max_huxi);
+    printf("max_huxi! %d\n", max_huxi);
 
     return max_huxi;
 }
@@ -49,7 +49,7 @@ struct Item {
 };
 
 int get_shun_huxi_xiao(char *cards) {
-    struct Item items[8];
+    struct Item items[7];
     memset(items, 0, sizeof(items));
 
     int cur_card = 0;
@@ -149,24 +149,18 @@ int get_shun_huxi_xiao(char *cards) {
         }
 
 
+        //小坎
         if (items[cur_item].i == 4) {
             items[cur_item].i = 5;
             if (cards[cur_card] == 3) {
                 items[cur_item].j = 5;
-                printf("cur_item! %d\n",cur_item);
-                if (9 > cur_item) {
-                    items[cur_item].huxi = 6;
-                }
-                if ((9 < cur_item) && (20 > cur_item)) {
-                    items[cur_item].huxi = 9;
-                }
-                // items[cur_item].huxi = 3;
-
+                items[cur_item].huxi = 6;
                 find = 1;
                 cards[cur_card] -= 3;
                 continue;
             }
         }
+
 
         huisu:    // 回溯
         if (cur_item < 0) goto finish;
@@ -195,10 +189,8 @@ int get_shun_huxi_xiao(char *cards) {
                 ++cards[1];
                 ++cards[6];
                 ++cards[9];
-
             } else if (items[cur_item].j == 5) {
                 cards[cur_card] += 3;
-
                 memset(&items[cur_item], 0, sizeof(struct Item));
                 if (cur_item == 0) goto finish;
                 --cur_item;
@@ -212,7 +204,7 @@ int get_shun_huxi_xiao(char *cards) {
 }
 
 int get_shun_huxi_da(char *cards) {
-    if (cards[10] > cards[11] || cards[10] > cards[12]) return -1;
+//    if (cards[10] > cards[11] || cards[10] > cards[12]) return -1;
 
     int sum = 0;
     for (int i = 10; i < 20; ++i) {
@@ -246,6 +238,19 @@ int get_shun_huxi_da(char *cards) {
         if (huxi < 0) continue;
         if (huxi + n_123 * 6 > max_huxi) max_huxi = huxi + n_123 * 6;
     }
+    int n_threes = 0;
+    for (int i = 0; i < 10; ++i) {
+        memcpy(tmp_cards, &cards[10], 10);
+        if (tmp_cards[i] == 3) {
+            n_threes++;
+        }
+    }
+    if (n_threes > 0) {
+        if (max_huxi == -1) {
+            max_huxi = 0;
+        }
+    }
+    max_huxi = max_huxi + n_threes * 9;
     return max_huxi;
 }
 
