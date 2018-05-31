@@ -112,7 +112,7 @@ int get_shun_huxi_xiao(char *cards) {
         // 小小大绞
         if (items[cur_item].i == 1) {
             items[cur_item].i = 2;
-            if (cards[cur_card] == 2 && cards[cur_card + 10] >= 1) {
+            if (cards[cur_card] >= 2 && cards[cur_card + 10] >= 1) {
                 items[cur_item].j = 2;
                 cards[cur_card] -= 2;
                 --cards[cur_card + 10];
@@ -124,7 +124,7 @@ int get_shun_huxi_xiao(char *cards) {
         // 大大小绞
         if (items[cur_item].i == 2) {
             items[cur_item].i = 3;
-            if (cards[cur_card + 10] == 2) {
+            if (cards[cur_card + 10] >= 2) {
                 items[cur_item].j = 3;
                 cards[cur_card + 10] -= 2;
                 --cards[cur_card];
@@ -192,8 +192,12 @@ int get_shun_huxi_xiao(char *cards) {
             } else if (items[cur_item].j == 5) {
                 cards[cur_card] += 3;
                 memset(&items[cur_item], 0, sizeof(struct Item));
-                if (cur_item == 0) goto finish;
+                if (cur_item == 0) {
+                printf("goto finish");
+                    goto finish;
+                }
                 --cur_item;
+                printf("return huisu");
                 goto huisu;
             }
         }
