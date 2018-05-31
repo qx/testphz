@@ -9,8 +9,7 @@ int get_shun_huxi_da(char *cards);
 int get_shun_huxi_da_without_2_7_10(char *cards, int num);
 
 int get_huxi(char *cards) {
-//    int huxi = get_kan_huxi(cards);
-    int huxi = 0;
+    int huxi = get_kan_huxi(cards);
 
     int sum = 0;
     for (int i = 0; i < 20; i++) {
@@ -21,8 +20,6 @@ int get_huxi(char *cards) {
     if (sum % 3 == 0) {
         // 除坎以外的顺子的胡息
         int other_huxi = get_shun_huxi_xiao(cards);
-//        int kan_huxi = get_kan_huxi(cards);
-//        other_huxi = other_huxi + kan_huxi;
         if (other_huxi < 0) {
             return -1;
         }
@@ -36,11 +33,7 @@ int get_huxi(char *cards) {
         if (cards[i] != 2) continue;
         memcpy(tmp_cards, cards, 20);
         tmp_cards[i] -= 2;
-
         int other_huxi = get_shun_huxi_xiao(tmp_cards);
-
-//        int kan_huxi = get_kan_huxi(tmp_cards);
-//        other_huxi = other_huxi + kan_huxi;
         if (other_huxi > max_huxi) max_huxi = other_huxi;
     }
 
@@ -173,28 +166,6 @@ int get_shun_huxi_xiao(char *cards) {
             }
         }
 
-        // 3张牌小
-        if (items[cur_item].i == 4) {
-            items[cur_item].i = 5;
-            if (cards[cur_card] == 3) {
-                items[cur_item].j = 5;
-                items[cur_item].huxi = 6;
-                find = 1;
-                cards[cur_card] -= 3;
-                continue;
-            }
-        }
-        // 3张牌大
-        if (items[cur_item].i == 5) {
-            items[cur_item].i = 6;
-            if (cards[cur_card + 10] == 3) {
-                items[cur_item].j = 6;
-                items[cur_item].huxi = 9;
-                find = 1;
-                cards[cur_card + 10] -= 3;
-                continue;
-            }
-        }
         huisu:    // 回溯
         if (cur_item < 0) goto finish;
 
@@ -222,18 +193,11 @@ int get_shun_huxi_xiao(char *cards) {
                 ++cards[1];
                 ++cards[6];
                 ++cards[9];
-
-            }else if (items[cur_item].j == 5) {
-                cards[cur_card] += 3;
-
-            }else if (items[cur_item].j == 6) {
-                cards[cur_card+10] += 3;
                 memset(&items[cur_item], 0, sizeof(struct Item));
                 if (cur_item == 0) goto finish;
                 --cur_item;
                 goto huisu;
             }
-
         }
     }
     finish:
