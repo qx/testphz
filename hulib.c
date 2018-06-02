@@ -28,7 +28,7 @@ int get_huxi(char *cards) {
     int max_huxi = -1;
     char tmp_cards[20];
     for (int i = 0; i < 20; i++) {
-        if (cards[i] != 2) continue;
+        if (cards[i] != 2) continue;//无将直接-1
         memcpy(tmp_cards, cards, 20);
         tmp_cards[i] -= 2;
         int other_huxi = get_shun_huxi_xiao(tmp_cards);
@@ -52,7 +52,7 @@ int get_shun_huxi_xiao(char *cards) {
     memset(items, 0, sizeof(items));
 
     int cur_card = 0;
-    int cur_item = -1;
+    int cur_item = -1;//算法下标
     int find = 1;
     int max_huxi = -1;
 
@@ -90,7 +90,7 @@ int get_shun_huxi_xiao(char *cards) {
                 goto huisu;
             }
         }
-
+        printf("当前算法:items  j------------------------------------>cur_item %d 第%d种\n", cur_item, items[cur_item].j);
         // 顺子
         if (items[cur_item].i == 0) {
             items[cur_item].i = 1;
@@ -170,7 +170,7 @@ int get_shun_huxi_xiao(char *cards) {
                 items[cur_item].huxi = 6;
                 find = 1;
                 cards[cur_card] -= 3;
-                printf("坎------------------------------------> %d,", cur_card + 1);
+                printf("小坎------------------------------------> %d,%d,%d", cur_card + 1, cur_card + 1, cur_card + 1);
                 printf(" %d,", cur_card + 1);
                 printf(" %d\n", cur_card + 1);
                 continue;
@@ -181,6 +181,8 @@ int get_shun_huxi_xiao(char *cards) {
         huisu:    // 回溯
 
         if (cur_item < 0) goto finish;
+
+        printf("当前算法:------------------------------------>第%d种\n",items[cur_item].j);
 
         if (items[cur_item].i == 0 || (items[cur_item].i == 5 && items[cur_item].j != 5)) {
             memset(&items[cur_item], 0, sizeof(struct Item));
@@ -274,7 +276,7 @@ int get_shun_huxi_da(char *cards) {
 
     int max_huxi = -1;
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 5; ++i) {
         memcpy(tmp_cards, &cards[10], 10);
         tmp_cards[0] -= n_123;
         tmp_cards[1] -= n_123;
@@ -304,20 +306,17 @@ int get_shun_huxi_da(char *cards) {
     return max_huxi;
 }
 
-//
 int get_shun_huxi_da_without_2_7_10(char *cards, int num) {
     char tmp_cards[10];
     memcpy(tmp_cards, cards, 10);
     tmp_cards[1] -= num;
     tmp_cards[6] -= num;
     tmp_cards[9] -= num;
-
     for (int i = 0; i < 10; ++i) {
         int n = tmp_cards[i];
         if (n == 0) continue;
         if (i + 2 >= 10) return -1;
         if (tmp_cards[i + 1] < n || tmp_cards[i + 2] < tmp_cards[i + 1]) return -1;
-
         tmp_cards[i + 1] -= n;
         tmp_cards[i + 2] -= n;
         printf("大顺子  ------------------------------------> %d", i + 1 + 10);
